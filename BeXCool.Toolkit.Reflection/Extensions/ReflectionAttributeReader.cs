@@ -1,10 +1,10 @@
-﻿using BeXCool.Toolkit.Reflection.Attributes;
+﻿using BeXCool.Toolkit.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace BeXCool.Toolkit.Reflection.Extensions
+namespace BeXCool.Toolkit.Reflection
 {
     public static class ReflectionAttributeReader
     {

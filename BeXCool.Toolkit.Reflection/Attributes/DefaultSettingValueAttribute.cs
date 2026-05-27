@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BeXCool.Toolkit.Reflection.Attributes
+namespace BeXCool.Toolkit.Reflection
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class DefaultSettingValueAttribute : Attribute

@@ -5,11 +5,11 @@ using System.Text;
 namespace BeXCool.Toolkit.Reflection
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class DefaultSettingValueAttribute : Attribute
+    public class SettingMaxValueAttribute : Attribute
     {
-        public object Value { get; }
+        public double Value { get; }
 
-        public DefaultSettingValueAttribute(object value)
+        public SettingMaxValueAttribute(double value)
         {
             Value = value;
         }

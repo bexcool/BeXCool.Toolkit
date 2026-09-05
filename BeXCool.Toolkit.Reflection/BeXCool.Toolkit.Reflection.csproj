@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>BeXCool.Toolkit.Reflection</Title>
-    <Version>1.2.0</Version>
+    <Version>1.4.1</Version>
     <Description>Toolkit for C# .NET. This part is for reflection.</Description>
     <PackageProjectUrl>https://github.com/bexcool/BeXCool.Toolkit</PackageProjectUrl>
     <Company>BeXCool</Company>

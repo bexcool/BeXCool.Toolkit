@@ -44,6 +44,21 @@ namespace BeXCool.Toolkit.Reflection
             return value;
         }
 
+        /// <summary>
+        /// <see langword="true"/> when <paramref name="propertyName"/> on <paramref name="obj"/>
+        /// declares a default via <see cref="SettingDefaultValueAttribute"/> or
+        /// <see cref="SettingDefaultValueFromAttribute"/>. Distinguishes "no default declared" from
+        /// "the declared default is null".
+        /// </summary>
+        public static bool HasDefaultValue(this object? obj, string propertyName)
+        {
+            var propInfo = obj?.GetType().GetProperty(propertyName);
+
+            return propInfo is not null
+                && (propInfo.GetCustomAttribute<SettingDefaultValueFromAttribute>() is not null
+                    || propInfo.GetCustomAttribute<SettingDefaultValueAttribute>() is not null);
+        }
+
         public static double? GetMaxValue(this object obj, string propertyName)
         {
             var propInfo = obj.GetType().GetProperty(propertyName);

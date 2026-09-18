@@ -95,6 +95,42 @@ namespace BeXCool.Toolkit.Reflection
         }
 
         /// <summary>
+        /// <see langword="true"/> when every setting reachable from <paramref name="root"/> equals its
+        /// declared default, i.e. <see cref="ResetAllToDefault(object?)"/> would have nothing to reset.
+        /// Walks the same properties as <see cref="ResetAllToDefault(object?)"/>: a property with its
+        /// own default is compared via <see cref="IsAtDefault"/>, a property without one is descended
+        /// into when it holds a nested settings object, and leaf properties with no declared default
+        /// are ignored.
+        /// </summary>
+        public static bool IsAllAtDefault(this object? root) => IsAllAtDefault(root, 0);
+
+        private static bool IsAllAtDefault(object? root, int depth)
+        {
+            if (root is null || depth >= MaxDepth)
+                return true;
+
+            foreach (var p in SettingProperties(root.GetType()))
+            {
+                if (!p.CanRead)
+                    continue;
+
+                if (root.HasDefaultValue(p.Name))
+                {
+                    if (!root.IsAtDefault(p.Name))
+                        return false;
+
+                    continue;
+                }
+
+                var value = p.GetValue(root);
+                if (value is not null && !IsSimple(value.GetType()) && !IsAllAtDefault(value, depth + 1))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Resolves the default value for a dotted <paramref name="path"/>. If an ancestor segment
         /// declares a default (e.g. a <see cref="SettingDefaultValueFromAttribute"/> factory on the
         /// parent object), the leaf's default is read off that default instance - so a factory that

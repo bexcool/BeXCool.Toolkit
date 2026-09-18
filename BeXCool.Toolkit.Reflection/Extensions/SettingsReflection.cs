@@ -63,6 +63,38 @@ namespace BeXCool.Toolkit.Reflection
         }
 
         /// <summary>
+        /// Recursively resets every setting reachable from <paramref name="root"/> to its declared
+        /// default. A property with its own <see cref="SettingDefaultValueAttribute"/> /
+        /// <see cref="SettingDefaultValueFromAttribute"/> is reset directly (same as
+        /// <see cref="ResetToDefault"/>); a property without one is left alone unless it holds a nested
+        /// settings object, in which case the walk continues into it. Leaf properties with no declared
+        /// default (and no nested object) are untouched.
+        /// </summary>
+        public static void ResetAllToDefault(this object? root) => ResetAllToDefault(root, 0);
+
+        private static void ResetAllToDefault(object? root, int depth)
+        {
+            if (root is null || depth >= MaxDepth)
+                return;
+
+            foreach (var p in SettingProperties(root.GetType()))
+            {
+                if (!p.CanRead)
+                    continue;
+
+                if (root.HasDefaultValue(p.Name))
+                {
+                    root.ResetToDefault(p.Name);
+                    continue;
+                }
+
+                var value = p.GetValue(root);
+                if (value is not null && !IsSimple(value.GetType()))
+                    ResetAllToDefault(value, depth + 1);
+            }
+        }
+
+        /// <summary>
         /// Resolves the default value for a dotted <paramref name="path"/>. If an ancestor segment
         /// declares a default (e.g. a <see cref="SettingDefaultValueFromAttribute"/> factory on the
         /// parent object), the leaf's default is read off that default instance - so a factory that
